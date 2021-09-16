@@ -1,4 +1,5 @@
 const path = require('path')
+//http core module
 const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
@@ -7,14 +8,20 @@ const { generateMessage, generateLocationMessage } = require('./utils/messages')
 const { addUser, removeUser, getUser, getUsersInRoom} = require('./utils/users')
 
 const app = express()
+//creating server explicitly if not express would have done automatically
 const server = http.createServer(app)
+
+//initializing socketio 
 const io = socketio(server)
 
 const port = process.env.PORT || 3000
 const publicDirectoryPath = path.join(__dirname, '../public')
 
+//serve up all files in the given directory
 app.use(express.static(publicDirectoryPath))
 
+
+//to start connection
 io.on('connection', (socket) => {
     console.log('New WebSocket connection')
 
@@ -57,6 +64,7 @@ io.on('connection', (socket) => {
         callback()
     })
 
+    //to disconnect
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)
 

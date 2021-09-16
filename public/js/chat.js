@@ -1,3 +1,4 @@
+//the only method io() given by client side javascript to start the web socket
 const socket = io()
 
 // Elements
@@ -14,8 +15,12 @@ const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 // Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+//querySearch
 
 const autoScroll = () => {
+    //commented code is needed to keep the page intact at the same place when new message sent
+    //uncommented code when new message entered automatically comes to bottom
+
     // const $newMessage = $messages.lastElementChild
     // const newMessageStyles = getComputedStyle($newMessage)
     // const newMessageMargin = parseInt(newMessageStyles.marginBottom)
@@ -34,6 +39,7 @@ socket.on('message', (message) => {
     const html = Mustache.render(messageTemplate, {
         username:message.username,
         message: message.text,
+        //moment to format time
         createdAt: moment(message.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
@@ -66,6 +72,8 @@ $messageForm.addEventListener('submit', (e) => {
     $messageFormButton.setAttribute('disabled', 'disabled')
 
     const message = e.target.elements.message.value
+
+    //socket.emit(name,parameters,callback)
 
     socket.emit('sendMessage', message, (error) => {
         $messageFormButton.removeAttribute('disabled')
